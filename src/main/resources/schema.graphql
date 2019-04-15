@@ -1,0 +1,12 @@
+type Bar {
+  high: Float
+  low: Float
+  dateName: String
+  open: Float
+  close: Float
+  volume: Int
+}
+
+type Query {
+  TimeSeries(from: String! to: String! symbol: String!): [Bar]
+}
