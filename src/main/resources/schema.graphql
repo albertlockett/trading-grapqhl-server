@@ -1,10 +1,17 @@
+scalar Long
+
 type Bar {
   high: Float
   low: Float
-  dateName: String
+  date: BarDate
   open: Float
   close: Float
   volume: Int
+}
+
+type BarDate {
+  startTimestamp: Long
+  endTimestamp: Long
 }
 
 type Query {

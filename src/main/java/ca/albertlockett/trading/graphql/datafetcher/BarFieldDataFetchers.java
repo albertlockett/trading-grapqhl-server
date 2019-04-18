@@ -42,9 +42,20 @@ public class BarFieldDataFetchers {
   }
 
   public static DataFetcher<Object> date() {
+    return env -> env.getSource();
+  }
+
+  public static DataFetcher<Long> dateStartTimestamp() {
     return env -> {
       Bar bar = env.getSource();
-      return bar.getDateName();
+      return bar.getBeginTime().toInstant().toEpochMilli();
+    };
+  }
+
+  public static DataFetcher<Long> dateEndTimestamp() {
+    return env -> {
+      Bar bar = env.getSource();
+      return bar.getBeginTime().toInstant().toEpochMilli();
     };
   }
 }

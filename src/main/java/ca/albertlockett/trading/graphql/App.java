@@ -9,8 +9,7 @@ import org.springframework.util.ResourceUtils;
 
 import ca.albertlockett.trading.graphql.datafetcher.BarFieldDataFetchers;
 import ca.albertlockett.trading.graphql.datafetcher.TimeSeriesDataFetcher;
-import graphql.language.ListType;
-import graphql.schema.GraphQLObjectType;
+import graphql.Scalars;
 import graphql.schema.GraphQLSchema;
 import graphql.schema.idl.RuntimeWiring;
 import graphql.schema.idl.SchemaGenerator;
@@ -33,6 +32,7 @@ public class App {
     TypeDefinitionRegistry typeRegistry = schemaParser.parse(schemaFile);
 
     RuntimeWiring wiring = RuntimeWiring.newRuntimeWiring()
+        .scalar(Scalars.GraphQLLong)
         .type("Query", typeWiring -> typeWiring.dataFetcher("TimeSeries", new TimeSeriesDataFetcher()))
         .type("Bar", typeWiring -> typeWiring
           .dataFetcher("open", BarFieldDataFetchers.open())
@@ -40,8 +40,11 @@ public class App {
           .dataFetcher("volume", BarFieldDataFetchers.volume())
           .dataFetcher("high", BarFieldDataFetchers.high())
           .dataFetcher("low", BarFieldDataFetchers.low())
-          .dataFetcher("dateName", BarFieldDataFetchers.date())
-      ).build();
+          .dataFetcher("date", BarFieldDataFetchers.date()))
+        .type("BarDate", typeWiring -> typeWiring
+          .dataFetcher("startTimestamp", BarFieldDataFetchers.dateStartTimestamp())
+          .dataFetcher("endTimestamp", BarFieldDataFetchers.dateEndTimestamp()))
+      .build();
       return schemaGenerator.makeExecutableSchema(typeRegistry, wiring);
   }
 }
