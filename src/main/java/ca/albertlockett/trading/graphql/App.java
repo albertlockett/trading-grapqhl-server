@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.util.ResourceUtils;
 
 import ca.albertlockett.trading.graphql.datafetcher.BarFieldDataFetchers;
+import ca.albertlockett.trading.graphql.datafetcher.InflectionPointsDataFetcher;
 import ca.albertlockett.trading.graphql.datafetcher.TimeSeriesDataFetcher;
 import graphql.Scalars;
 import graphql.schema.GraphQLSchema;
@@ -33,7 +34,13 @@ public class App {
 
     RuntimeWiring wiring = RuntimeWiring.newRuntimeWiring()
         .scalar(Scalars.GraphQLLong)
-        .type("Query", typeWiring -> typeWiring.dataFetcher("TimeSeries", new TimeSeriesDataFetcher()))
+        .type("Query", typeWiring -> typeWiring
+          .dataFetcher("timeSeries", new TimeSeriesDataFetcher()))
+
+        .type("TimeSeries", typeWiring -> typeWiring
+          .dataFetcher("bars", TimeSeriesDataFetcher.bars())
+          .dataFetcher("inflectionPoints", TimeSeriesDataFetcher.inflectionPoints()))
+
         .type("Bar", typeWiring -> typeWiring
           .dataFetcher("open", BarFieldDataFetchers.open())
           .dataFetcher("close", BarFieldDataFetchers.close())
@@ -41,9 +48,17 @@ public class App {
           .dataFetcher("high", BarFieldDataFetchers.high())
           .dataFetcher("low", BarFieldDataFetchers.low())
           .dataFetcher("date", BarFieldDataFetchers.date()))
+
         .type("BarDate", typeWiring -> typeWiring
           .dataFetcher("startTimestamp", BarFieldDataFetchers.dateStartTimestamp())
-          .dataFetcher("endTimestamp", BarFieldDataFetchers.dateEndTimestamp()))
+          .dataFetcher("endTimestamp", BarFieldDataFetchers.dateEndTimestamp())
+          .dataFetcher("name", BarFieldDataFetchers.dateName())
+          .dataFetcher("simpleName", BarFieldDataFetchers.dateSimpleName()))
+
+        .type("InflectionPoints", typeWiring -> typeWiring
+          .dataFetcher("resistance", InflectionPointsDataFetcher.resistance())
+          .dataFetcher("supports", InflectionPointsDataFetcher.supports()))
+
       .build();
       return schemaGenerator.makeExecutableSchema(typeRegistry, wiring);
   }

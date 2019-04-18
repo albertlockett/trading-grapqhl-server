@@ -12,8 +12,25 @@ type Bar {
 type BarDate {
   startTimestamp: Long
   endTimestamp: Long
+  name: String
+  simpleName: String
+}
+
+type InflectionPoint {
+  bar: Bar
+  index: Int
+}
+
+type InflectionPoints {
+  resistance: [InflectionPoint]
+  supports: [InflectionPoint]
+}
+
+type TimeSeries {
+  bars: [Bar]
+  inflectionPoints(localLowDays: Int = 20): InflectionPoints
 }
 
 type Query {
-  TimeSeries(from: String! to: String! symbol: String!): [Bar]
+  timeSeries(from: String! to: String! symbol: String!): TimeSeries
 }

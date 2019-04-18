@@ -58,4 +58,18 @@ public class BarFieldDataFetchers {
       return bar.getBeginTime().toInstant().toEpochMilli();
     };
   }
+
+  public static DataFetcher<String> dateName() {
+    return env -> {
+      Bar bar = env.getSource();
+      return bar.getDateName();
+    };
+  }
+
+  public static DataFetcher<String> dateSimpleName() {
+    return env -> {
+      Bar bar = env.getSource();
+      return bar.getSimpleDateName();
+    };
+  }
 }
