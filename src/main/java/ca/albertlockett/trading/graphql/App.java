@@ -9,6 +9,7 @@ import org.springframework.util.ResourceUtils;
 
 import ca.albertlockett.trading.graphql.datafetcher.BarFieldDataFetchers;
 import ca.albertlockett.trading.graphql.datafetcher.InflectionPointsDataFetcher;
+import ca.albertlockett.trading.graphql.datafetcher.SymbolsDataFetcher;
 import ca.albertlockett.trading.graphql.datafetcher.TimeSeriesDataFetcher;
 import graphql.Scalars;
 import graphql.schema.GraphQLSchema;
@@ -35,11 +36,9 @@ public class App {
     RuntimeWiring wiring = RuntimeWiring.newRuntimeWiring()
         .scalar(Scalars.GraphQLLong)
         .type("Query", typeWiring -> typeWiring
+          .dataFetcher("symbols", new SymbolsDataFetcher())
           .dataFetcher("timeSeries", new TimeSeriesDataFetcher()))
 
-        .type("TimeSeries", typeWiring -> typeWiring
-          .dataFetcher("bars", TimeSeriesDataFetcher.bars())
-          .dataFetcher("inflectionPoints", TimeSeriesDataFetcher.inflectionPoints()))
 
         .type("Bar", typeWiring -> typeWiring
           .dataFetcher("open", BarFieldDataFetchers.open())
@@ -58,6 +57,13 @@ public class App {
         .type("InflectionPoints", typeWiring -> typeWiring
           .dataFetcher("resistance", InflectionPointsDataFetcher.resistance())
           .dataFetcher("supports", InflectionPointsDataFetcher.supports()))
+
+        .type("Symbol", typeWiring -> typeWiring
+          .dataFetcher("name", SymbolsDataFetcher.name()))
+        
+        .type("TimeSeries", typeWiring -> typeWiring
+          .dataFetcher("bars", TimeSeriesDataFetcher.bars())
+          .dataFetcher("inflectionPoints", TimeSeriesDataFetcher.inflectionPoints()))
 
       .build();
       return schemaGenerator.makeExecutableSchema(typeRegistry, wiring);

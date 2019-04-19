@@ -26,11 +26,16 @@ type InflectionPoints {
   supports: [InflectionPoint]
 }
 
+type Symbol {
+  name: String
+}
+
 type TimeSeries {
   bars: [Bar]
   inflectionPoints(localLowDays: Int = 20): InflectionPoints
 }
 
 type Query {
+  symbols: [Symbol]
   timeSeries(from: String! to: String! symbol: String!): TimeSeries
 }
